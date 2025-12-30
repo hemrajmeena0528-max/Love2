@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year My Love ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle, #ff7eb3, #ff758c, #c9184a);
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
+  .box {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 30px;
+    border-radius: 25px;
+    max-width: 90%;
+    box-shadow: 0 0 30px rgba(255,255,255,0.3);
+  }
+
+  h1 {
+    font-size: 2.4em;
+    margin-bottom: 10px;
+  }
+
+  #countdown {
+    font-size: 1.4em;
+    margin: 20px 0;
+  }
+
+  p {
+    font-size: 1.1em;
+    line-height: 1.6;
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 20px;
+    background: #ff2e63;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #ff1744;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="box">
+  <div id="before">
+    <h1>💖 Waiting for Our New Year 💖</h1>
+    <div id="countdown"></div>
+    <p>
+      Every second feels special,<br>
+      because it leads me closer to you ❤️
+    </p>
+  </div>
+
+  <div id="after" class="hidden">
+    <h1>🎆 Happy New Year My Love 🎆</h1>
+    <p>
+      My heart,<br><br>
+      As this new year begins, I just want you to know —  
+      you are my favorite feeling, my safest place,  
+      and my forever dream 💕<br><br>
+      I promise to love you a little more every day,  
+      to stand by you in every moment,  
+      and to make this year even more beautiful —  
+      together ❤️<br><br>
+      Happy New Year, my everything ✨
+    </p>
+    <button onclick="playSong()">▶ Play Our Song</button>
+  </div>
+</div>
+
+<audio id="song" src="song.mp3"></audio>
+
+<script>
+/* ---------- COUNTDOWN ---------- */
+const newYear = new Date("January 1, 2026 00:00:00").getTime();
+const before = document.getElementById("before");
+const after = document.getElementById("after");
+
+setInterval(() => {
+  const now = new Date().getTime();
+  const diff = newYear - now;
+
+  if (diff <= 0) {
+    before.classList.add("hidden");
+    after.classList.remove("hidden");
+    return;
+  }
+
+  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((diff / (1000 * 60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+
+  document.getElementById("countdown").innerHTML =
+    `⏳ ${d}d ${h}h ${m}m ${s}s`;
+}, 1000);
+
+/* ---------- MUSIC ---------- */
+function playSong() {
+  document.getElementById("song").play();
+}
+
+/* ---------- FIREWORKS ---------- */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let fireworks = [];
+
+class Firework {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height;
+    this.targetY = Math.random() * canvas.height / 2;
+    this.radius = 2;
+    this.exploded = false;
+    this.particles = [];
+  }
+
+  update() {
+    if (!this.exploded) {
+      this.y -= 5;
+      if (this.y <= this.targetY) {
+        this.exploded = true;
+        for (let i = 0; i < 40; i++) {
+          this.particles.push({
+            x: this.x,
+            y: this.y,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6,
+            life: 60
+          });
+        }
+      }
+    }
+  }
+
+  draw() {
+    if (!this.exploded) {
+      ctx.fillStyle = "white";
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      this.particles.forEach(p => {
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fillRect(p.x, p.y, 2, 2);
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+      });
+      this.particles = this.particles.filter(p => p.life > 0);
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (Math.random() < 0.05) fireworks.push(new Firework());
+
+  fireworks.forEach(f => {
+    f.update();
+    f.draw();
+  });
+
+  fireworks = fireworks.filter(f => !f.exploded || f.particles.length > 0);
+
+  requestAnimationFrame(animate);
+}
+animate();
+
+window.onresize = () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+};
+</script>
+
+</body>
+</html>
