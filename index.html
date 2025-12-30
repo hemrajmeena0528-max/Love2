@@ -37,8 +37,7 @@
   }
 
   h1 {
-    font-size: 2.4em;
-    margin-bottom: 10px;
+    font-size: 2.3em;
   }
 
   #countdown {
@@ -53,9 +52,9 @@
 
   button {
     margin-top: 15px;
-    padding: 10px 25px;
+    padding: 12px 28px;
     border: none;
-    border-radius: 20px;
+    border-radius: 25px;
     background: #ff2e63;
     color: white;
     font-size: 1em;
@@ -77,35 +76,51 @@
 <canvas id="fireworks"></canvas>
 
 <div class="box">
-  <div id="before">
-    <h1>💖 Waiting for Our New Year 💖</h1>
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <h1>💖 For My Love 💖</h1>
+    <p>
+      This surprise is made only for you ❤️<br>
+      Tap below to begin our New Year ✨
+    </p>
+    <button onclick="startExperience()">▶ Start with Music</button>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div id="before" class="hidden">
+    <h1>💫 Counting Our Moments 💫</h1>
     <div id="countdown"></div>
     <p>
-      Every second feels special,<br>
-      because it leads me closer to you ❤️
+      Every second brings me closer<br>
+      to loving you even more ❤️
     </p>
   </div>
 
+  <!-- FINAL MESSAGE -->
   <div id="after" class="hidden">
     <h1>🎆 Happy New Year My Love 🎆</h1>
     <p>
       My heart,<br><br>
-      As this new year begins, I just want you to know —  
-      you are my favorite feeling, my safest place,  
-      and my forever dream 💕<br><br>
-      I promise to love you a little more every day,  
-      to stand by you in every moment,  
-      and to make this year even more beautiful —  
-      together ❤️<br><br>
+      You are my favorite chapter,<br>
+      my calm in chaos,<br>
+      and my forever wish 💕<br><br>
+      This year and every year after,<br>
+      I choose you — always ❤️<br><br>
       Happy New Year, my everything ✨
     </p>
-    <button onclick="playSong()">▶ Play Our Song</button>
   </div>
 </div>
 
 <audio id="song" src="song.mp3"></audio>
 
 <script>
+/* ---------- START EXPERIENCE ---------- */
+function startExperience() {
+  document.getElementById("song").play();
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("before").classList.remove("hidden");
+}
+
 /* ---------- COUNTDOWN ---------- */
 const newYear = new Date("January 1, 2026 00:00:00").getTime();
 const before = document.getElementById("before");
@@ -130,16 +145,11 @@ setInterval(() => {
     `⏳ ${d}d ${h}h ${m}m ${s}s`;
 }, 1000);
 
-/* ---------- MUSIC ---------- */
-function playSong() {
-  document.getElementById("song").play();
-}
-
 /* ---------- FIREWORKS ---------- */
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = innerWidth;
+canvas.height = innerHeight;
 
 let fireworks = [];
 
@@ -148,7 +158,6 @@ class Firework {
     this.x = Math.random() * canvas.width;
     this.y = canvas.height;
     this.targetY = Math.random() * canvas.height / 2;
-    this.radius = 2;
     this.exploded = false;
     this.particles = [];
   }
@@ -174,9 +183,7 @@ class Firework {
   draw() {
     if (!this.exploded) {
       ctx.fillStyle = "white";
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.fillRect(this.x, this.y, 2, 2);
     } else {
       this.particles.forEach(p => {
         ctx.fillStyle = "rgba(255,255,255,0.8)";
@@ -192,23 +199,15 @@ class Firework {
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   if (Math.random() < 0.05) fireworks.push(new Firework());
-
-  fireworks.forEach(f => {
-    f.update();
-    f.draw();
-  });
-
-  fireworks = fireworks.filter(f => !f.exploded || f.particles.length > 0);
-
+  fireworks.forEach(f => { f.update(); f.draw(); });
   requestAnimationFrame(animate);
 }
 animate();
 
 window.onresize = () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
 };
 </script>
 
